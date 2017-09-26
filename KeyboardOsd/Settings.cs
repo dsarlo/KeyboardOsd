@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -18,6 +17,8 @@ namespace KeyboardOsd
 
         private readonly List<OnScreenDisplay> _activeOnScreenDisplays;
 
+        private bool _userClosedForm = true;
+
         public Settings()
         {
             InitializeComponent();
@@ -25,6 +26,39 @@ namespace KeyboardOsd
             _userSettings = new UserSettings();
             _colorDialog = new ColorDialog();
             _activeOnScreenDisplays = new List<OnScreenDisplay>();
+
+            _notifyIcon.Icon = Icon;
+
+            CreateContextMenuForTray();
+        }
+
+        private void CreateContextMenuForTray()
+        {
+            _notifyIcon.ContextMenu = new ContextMenu();
+
+            MenuItem showItem = new MenuItem("Show");
+            showItem.Click += ShowItemOnClick;
+            MenuItem exitItem = new MenuItem("Exit");
+            exitItem.Click += ExitItemOnClick;
+            MenuItem[] menuItems = { showItem, exitItem };
+
+            _notifyIcon.ContextMenu.MenuItems.AddRange(menuItems);
+        }
+
+        private void ExitItemOnClick(object sender, EventArgs eventArgs)
+        {
+            foreach (OnScreenDisplay onScreenDisplay in _activeOnScreenDisplays)
+            {
+                onScreenDisplay.Close();
+            }
+            _userClosedForm = false;
+            Close();
+        }
+
+        private void ShowItemOnClick(object sender, EventArgs eventArgs)
+        {
+            Show();
+            _userSettings.SettingsHidden = false;
         }
 
         private void OpacityNumeric_ValueChanged(object sender, EventArgs e)
@@ -109,26 +143,35 @@ namespace KeyboardOsd
         private void FgColorBox_Click(object sender, EventArgs e)
         {
             DialogResult result = _colorDialog.ShowDialog();
-            if (result != DialogResult.OK) return;
-            Color selectedColor = _colorDialog.Color;
-            _userSettings.FgColor = selectedColor;
-            fgColorBox.BackColor = selectedColor;
+            if (result == DialogResult.OK)
+            {
+                Color selectedColor = _colorDialog.Color;
+                _userSettings.FgColor = selectedColor;
+                fgColorBox.BackColor = selectedColor;
+            }
         }
 
         private void BgColorBox_Click(object sender, EventArgs e)
         {
             DialogResult result = _colorDialog.ShowDialog();
-            if (result != DialogResult.OK) return;
-            Color selectedColor = _colorDialog.Color;
-            _userSettings.BgColor = selectedColor;
-            bgColorBox.BackColor = selectedColor;
+            if (result == DialogResult.OK)
+            {
+                Color selectedColor = _colorDialog.Color;
+                _userSettings.BgColor = selectedColor;
+                bgColorBox.BackColor = selectedColor;
+            }
         }
 
         private void Settings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (OnScreenDisplay onScreenDisplay in _activeOnScreenDisplays)
+            if (_userClosedForm)
             {
-                onScreenDisplay.Close();
+                e.Cancel = true;
+                Hide();
+                _userSettings.SettingsHidden = true;
+                _notifyIcon.Visible = true;
+                _notifyIcon.BalloonTipText = @"OSD Settings has been minimized to the system tray";
+                _notifyIcon.ShowBalloonTip(5);
             }
         }
     }

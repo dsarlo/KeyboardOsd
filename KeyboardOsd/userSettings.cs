@@ -6,18 +6,12 @@ namespace KeyboardOsd
     public class UserSettings
     {
         private decimal _opacity = 100;
-        private bool _capsLock;
-        private bool _scrollLock;
-        private bool _numLock;
         private bool _bgTransparent;
         private bool _showWhenEnabled;
         private Color _bgColor;
         private Color _fgColor;
 
         public const string PropertyNameOpacity = "Opacity";
-        public const string PropertyNameCapsLock = "CapsLock";
-        public const string PropertyNameScrollLock = "ScrollLock";
-        public const string PropertyNameNumLock = "NumLock";
         public const string PropertyNameBgTransparent = "BgTransparent";
         public const string PropertyNameShowWhenEnabled = "ShowWhenEnabled";
         public const string PropertyNameBgColor = "BgColor";
@@ -35,35 +29,13 @@ namespace KeyboardOsd
             }
         }
 
-        internal bool CapsLock
-        {
-            get => _capsLock;
-            set
-            {
-                _capsLock = value;
-                OnPropertyChanged(PropertyNameCapsLock);
-            }
-        }
+        public bool SettingsHidden { get; set; }
 
-        internal bool ScrollLock
-        {
-            get => _scrollLock;
-            set
-            {
-                _scrollLock = value;
-                OnPropertyChanged(PropertyNameScrollLock);
-            }
-        }
+        internal bool CapsLock { get; set; }
 
-        internal bool NumLock
-        {
-            get => _numLock;
-            set
-            {
-                _numLock = value;
-                OnPropertyChanged(PropertyNameNumLock);
-            }
-        }
+        internal bool ScrollLock { get; set; }
+
+        internal bool NumLock { get; set; }
 
         internal bool BgTransparent
         {

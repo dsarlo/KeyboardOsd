@@ -43,6 +43,9 @@
             this.osdLabel.Size = new System.Drawing.Size(184, 33);
             this.osdLabel.TabIndex = 1;
             this.osdLabel.Text = "CAPS LOCK OFF";
+            this.osdLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.osdLabel_MouseDown);
+            this.osdLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.osdLabel_MouseMove);
+            this.osdLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.osdLabel_MouseUp);
             // 
             // OnScreenDisplay
             // 
@@ -53,6 +56,9 @@
             this.Name = "OnScreenDisplay";
             this.Text = "OSD";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnScreenDisplay_FormClosing);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnScreenDisplay_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnScreenDisplay_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnScreenDisplay_MouseUp);
             this.ResumeLayout(false);
             this.PerformLayout();
 

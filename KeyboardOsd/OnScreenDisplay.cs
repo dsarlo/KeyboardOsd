@@ -29,22 +29,7 @@ namespace KeyboardOsd
             _originalTransKey = TransparencyKey;
             _showWhenEnabled = userSettings.ShowWhenEnabled;
 
-            switch (osdType)
-            {
-                case OsdType.CapsLock:
-                    _osdText = "CAPS LOCK ";
-                    break;
-                case OsdType.ScrollLock:
-                    _osdText = "SCROLL LOCK ";
-                    break;
-                case OsdType.NumLock:
-                    _osdText = "NUM LOCK ";
-                    break;
-                case OsdType.Invalid:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(osdType), osdType, null);
-            }
+            _osdText = OsdTypeToText();
 
             LoadOsdStyle();
 
@@ -52,6 +37,28 @@ namespace KeyboardOsd
             _thread.Start();
 
             HookEvents();
+        }
+
+        private string OsdTypeToText()
+        {
+            string osdtext = string.Empty;
+            switch (_osdType)
+            {
+                case OsdType.CapsLock:
+                    osdtext = "CAPS LOCK ";
+                    break;
+                case OsdType.ScrollLock:
+                    osdtext = "SCROLL LOCK ";
+                    break;
+                case OsdType.NumLock:
+                    osdtext = "NUM LOCK ";
+                    break;
+                case OsdType.Invalid:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(_osdType), _osdType, null);
+            }
+            return osdtext;
         }
 
         private void HookEvents()
@@ -85,17 +92,13 @@ namespace KeyboardOsd
                     break;
                 case UserSettings.PropertyNameShowWhenEnabled:
                     _showWhenEnabled = _userSettings.ShowWhenEnabled;
-                    UpdateLabelText(_osdType);
+                    UpdateLabelText();
                     break;
                 case UserSettings.PropertyNameBgColor:
                     BackColor = _userSettings.BgColor;
                     break;
                 case UserSettings.PropertyNameFgColor:
                     ForeColor = _userSettings.FgColor;
-                    break;
-                case UserSettings.PropertyNameCapsLock:
-                case UserSettings.PropertyNameScrollLock:
-                case UserSettings.PropertyNameNumLock:
                     break;
             }
         }
@@ -106,7 +109,7 @@ namespace KeyboardOsd
             StartPosition = FormStartPosition.Manual;
             Location = new Point(0, 0);
             osdLabel.ForeColor = _userSettings.FgColor;
-            UpdateLabelText(_osdType);
+            UpdateLabelText();
             osdLabel.Text = _osdText;
             BackColor = _userSettings.BgColor;
         }
@@ -123,20 +126,20 @@ namespace KeyboardOsd
             {
                 if (osdLabel.InvokeRequired)
                 {
-                    osdLabel.Invoke(new MethodInvoker(() => UpdateLabelText(_osdType)));
+                    osdLabel.Invoke(new MethodInvoker(UpdateLabelText));
                 }
                 else
                 {
-                    UpdateLabelText(_osdType);
+                    UpdateLabelText();
                 }
                 Thread.Sleep(100);
             }
-        }//INSTEAD LISTEN FOR ALL KEYS AND NARROW DOWN TO ONLY THE KEYS I WANT
+        }//TODO INSTEAD LISTEN FOR ALL KEYS AND NARROW DOWN TO ONLY THE KEYS I WANT
 
-        private void UpdateLabelText(OsdType osdType)
+        private Keys GetKeyBasedOnOsdType()
         {
             Keys keyBasedOnType = Keys.None;
-            switch (osdType)
+            switch (_osdType)
             {
                 case OsdType.CapsLock:
                     keyBasedOnType = Keys.CapsLock;
@@ -150,65 +153,81 @@ namespace KeyboardOsd
                 case OsdType.Invalid:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(osdType), osdType, null);
+                    throw new ArgumentOutOfRangeException(nameof(_osdType), _osdType, null);
             }
-            if (IsKeyLocked(keyBasedOnType))
+            return keyBasedOnType;
+        }
+
+        private void UpdateLabelText()
+        {
+            Keys keyOsdIsTracking = GetKeyBasedOnOsdType();
+
+            if (IsKeyLocked(keyOsdIsTracking))
             {
                 osdLabel.Text = _osdText + @"ON";
-                if (_showWhenEnabled)
-                {
-                    Show();
-                }
+                if (_showWhenEnabled) Show();
             }
             else
             {
                 osdLabel.Text = _osdText + @"OFF";
-                if (_showWhenEnabled)
-                {
-                    Hide();
-                }
+                if (_showWhenEnabled) Hide();
             }
+            if (_userSettings.SettingsHidden)
+            {
+                BringToFront();
+                TopMost = true;
+            }//TODO When the userSettings form is minimized, I can't access the contextmenu
         }
 
         #region mouseEvents
-        Point mouseDownPoint = Point.Empty;
+        private Point _mouseDownPoint = Point.Empty;
 
-        private void OSD_MouseDown(object sender, MouseEventArgs e)
+        private void OnScreenDisplay_MouseDown(object sender, MouseEventArgs e)
         {
-            mouseDownPoint = new Point(e.X, e.Y);
+            MouseDownEvent(e);
         }
 
-        private void OSD_MouseUp(object sender, MouseEventArgs e)
+        private void OnScreenDisplay_MouseUp(object sender, MouseEventArgs e)
         {
-            mouseDownPoint = Point.Empty;
+            MouseUpEvent();
         }
 
-        private void OSD_MouseMove(object sender, MouseEventArgs e)
+        private void OnScreenDisplay_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mouseDownPoint.IsEmpty)
+            MouseMoveEvent(e);
+        }
+
+        private void osdLabel_MouseDown(object sender, MouseEventArgs e)
+        {
+            MouseDownEvent(e);
+        }
+
+        private void osdLabel_MouseUp(object sender, MouseEventArgs e)
+        {
+            MouseUpEvent();
+        }
+
+        private void osdLabel_MouseMove(object sender, MouseEventArgs e)
+        {
+            MouseMoveEvent(e);
+        }
+
+        private void MouseDownEvent(MouseEventArgs e)
+        {
+            _mouseDownPoint = new Point(e.X, e.Y);
+        }
+
+        private void MouseUpEvent()
+        {
+            _mouseDownPoint = Point.Empty;
+        }
+
+        private void MouseMoveEvent(MouseEventArgs e)
+        {
+            if (!_mouseDownPoint.IsEmpty)
             {
-                return;
+                Location = new Point(Location.X + (e.X - _mouseDownPoint.X), Location.Y + (e.Y - _mouseDownPoint.Y));
             }
-            Location = new Point(Location.X + (e.X - mouseDownPoint.X), Location.Y + (e.Y - mouseDownPoint.Y));
-        }
-
-        private void label1_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseDownPoint = new Point(e.X, e.Y);
-        }
-
-        private void label1_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseDownPoint = Point.Empty;
-        }
-
-        private void label1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouseDownPoint.IsEmpty)
-            {
-                return;
-            }
-            Location = new Point(Location.X + (e.X - mouseDownPoint.X), Location.Y + (e.Y - mouseDownPoint.Y));
         }
         #endregion
     }

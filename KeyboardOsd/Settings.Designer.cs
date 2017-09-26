@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.bgTransCheckBox = new System.Windows.Forms.CheckBox();
             this.popupCheckBox = new System.Windows.Forms.CheckBox();
             this.numLockCheckBox = new System.Windows.Forms.CheckBox();
@@ -39,6 +40,7 @@
             this.fgLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.opacityNumeric = new System.Windows.Forms.NumericUpDown();
+            this._notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.opacityNumeric)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,7 +108,7 @@
             // 
             // bgColorBox
             // 
-            this.bgColorBox.Location = new System.Drawing.Point(199, 80);
+            this.bgColorBox.Location = new System.Drawing.Point(230, 80);
             this.bgColorBox.Margin = new System.Windows.Forms.Padding(4);
             this.bgColorBox.Name = "bgColorBox";
             this.bgColorBox.Size = new System.Drawing.Size(44, 28);
@@ -117,7 +119,7 @@
             // bgLabel
             // 
             this.bgLabel.AutoSize = true;
-            this.bgLabel.Location = new System.Drawing.Point(176, 61);
+            this.bgLabel.Location = new System.Drawing.Point(207, 61);
             this.bgLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.bgLabel.Name = "bgLabel";
             this.bgLabel.Size = new System.Drawing.Size(88, 17);
@@ -126,7 +128,7 @@
             // 
             // fgColorBox
             // 
-            this.fgColorBox.Location = new System.Drawing.Point(198, 29);
+            this.fgColorBox.Location = new System.Drawing.Point(229, 29);
             this.fgColorBox.Margin = new System.Windows.Forms.Padding(4);
             this.fgColorBox.Name = "fgColorBox";
             this.fgColorBox.Size = new System.Drawing.Size(44, 28);
@@ -137,7 +139,7 @@
             // fgLabel
             // 
             this.fgLabel.AutoSize = true;
-            this.fgLabel.Location = new System.Drawing.Point(180, 9);
+            this.fgLabel.Location = new System.Drawing.Point(211, 9);
             this.fgLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.fgLabel.Name = "fgLabel";
             this.fgLabel.Size = new System.Drawing.Size(86, 17);
@@ -169,11 +171,15 @@
             0});
             this.opacityNumeric.ValueChanged += new System.EventHandler(this.OpacityNumeric_ValueChanged);
             // 
+            // _notifyIcon
+            // 
+            this._notifyIcon.Text = "OSD Settings";
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(279, 210);
+            this.ClientSize = new System.Drawing.Size(310, 210);
             this.Controls.Add(this.bgTransCheckBox);
             this.Controls.Add(this.popupCheckBox);
             this.Controls.Add(this.numLockCheckBox);
@@ -206,6 +212,7 @@
         private System.Windows.Forms.Label fgLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown opacityNumeric;
+        private System.Windows.Forms.NotifyIcon _notifyIcon;
     }
 }
 

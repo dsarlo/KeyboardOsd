@@ -9,3 +9,14 @@ c:\users\daniel sarlo\documents\visual studio 2017\Projects\KeyboardOsd\Keyboard
 c:\users\daniel sarlo\documents\visual studio 2017\Projects\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.exe
 c:\users\daniel sarlo\documents\visual studio 2017\Projects\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.pdb
 c:\users\daniel sarlo\documents\visual studio 2017\Projects\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.OnScreenDisplay.resources
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\bin\Debug\KeyboardOsd.exe.config
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\bin\Debug\KeyboardOsd.exe
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\bin\Debug\KeyboardOsd.pdb
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.csprojResolveAssemblyReference.cache
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.OnScreenDisplay.resources
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.Properties.Resources.resources
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.Settings.resources
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.csproj.GenerateResource.Cache
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.csproj.CoreCompileInputs.cache
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.exe
+C:\Users\Daniel Sarlo\Documents\KeyboardOsd\KeyboardOsd\obj\Debug\KeyboardOsd.pdb

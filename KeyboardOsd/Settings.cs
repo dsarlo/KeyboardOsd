@@ -58,7 +58,6 @@ namespace KeyboardOsd
         private void ShowItemOnClick(object sender, EventArgs eventArgs)
         {
             Show();
-            _userSettings.SettingsHidden = false;
         }
 
         private void OpacityNumeric_ValueChanged(object sender, EventArgs e)
@@ -71,6 +70,8 @@ namespace KeyboardOsd
             popupCheckBox.Enabled = enable;
             opacityNumeric.Enabled = enable;
             bgTransCheckBox.Enabled = enable;
+            fgColorBox.Enabled = enable;
+            bgColorBox.Enabled = enable;
         }
 
         private void CheckIfAnyOsdIsEnabled()
@@ -91,7 +92,7 @@ namespace KeyboardOsd
             }
             else
             {
-                _capsLockOsd.Close();//Maybe stop thread before close?
+                _capsLockOsd.Close();
                 _capsLockOsd = null;
             }
         }
@@ -108,7 +109,7 @@ namespace KeyboardOsd
             }
             else
             {
-                _scrollLockOsd.Close();//Maybe stop thread before close?
+                _scrollLockOsd.Close();
                 _scrollLockOsd = null;
             }
         }
@@ -125,7 +126,7 @@ namespace KeyboardOsd
             }
             else
             {
-                _numLockOsd.Close();//Maybe stop thread before close?
+                _numLockOsd.Close();
                 _numLockOsd = null;
             }
         }
@@ -168,7 +169,6 @@ namespace KeyboardOsd
             {
                 e.Cancel = true;
                 Hide();
-                _userSettings.SettingsHidden = true;
                 _notifyIcon.Visible = true;
                 _notifyIcon.BalloonTipText = @"OSD Settings has been minimized to the system tray";
                 _notifyIcon.ShowBalloonTip(5);

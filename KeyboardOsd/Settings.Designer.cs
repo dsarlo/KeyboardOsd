@@ -108,6 +108,7 @@
             // 
             // bgColorBox
             // 
+            this.bgColorBox.Enabled = false;
             this.bgColorBox.Location = new System.Drawing.Point(230, 80);
             this.bgColorBox.Margin = new System.Windows.Forms.Padding(4);
             this.bgColorBox.Name = "bgColorBox";
@@ -128,6 +129,7 @@
             // 
             // fgColorBox
             // 
+            this.fgColorBox.Enabled = false;
             this.fgColorBox.Location = new System.Drawing.Point(229, 29);
             this.fgColorBox.Margin = new System.Windows.Forms.Padding(4);
             this.fgColorBox.Name = "fgColorBox";

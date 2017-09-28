@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -19,6 +20,8 @@ namespace KeyboardOsd
         private readonly Color _originalTransKey;
 
         private bool _showWhenEnabled;
+
+        private readonly object _threadLock = new object();
 
         public OnScreenDisplay(OsdType osdType, UserSettings userSettings)
         {
@@ -92,7 +95,7 @@ namespace KeyboardOsd
                     break;
                 case UserSettings.PropertyNameShowWhenEnabled:
                     _showWhenEnabled = _userSettings.ShowWhenEnabled;
-                    UpdateLabelText();
+                    UpdateLabelText();//TODO BUG! WHEN ENABLED, IF YOU CLOSE AN OSD AND THEN ENABLE IT, IT WON'T SHOW
                     break;
                 case UserSettings.PropertyNameBgColor:
                     BackColor = _userSettings.BgColor;
@@ -112,6 +115,7 @@ namespace KeyboardOsd
             UpdateLabelText();
             osdLabel.Text = _osdText;
             BackColor = _userSettings.BgColor;
+            TopMost = true;
         }
 
         private void OnScreenDisplay_FormClosing(object sender, FormClosingEventArgs e)
@@ -124,15 +128,18 @@ namespace KeyboardOsd
         {
             while (_thread.IsAlive)
             {
-                if (osdLabel.InvokeRequired)
+                lock (_threadLock)
                 {
-                    osdLabel.Invoke(new MethodInvoker(UpdateLabelText));
+                    if (osdLabel.InvokeRequired)
+                    {
+                        osdLabel.Invoke(new MethodInvoker(UpdateLabelText));
+                    }
+                    else
+                    {
+                        UpdateLabelText();
+                    }
                 }
-                else
-                {
-                    UpdateLabelText();
-                }
-                Thread.Sleep(100);
+                Thread.Sleep(100);//TODO MAKE IT SO YOU CAN'T CLOSE OSD's IN EXPLORER
             }
         }//TODO INSTEAD LISTEN FOR ALL KEYS AND NARROW DOWN TO ONLY THE KEYS I WANT
 
@@ -172,11 +179,6 @@ namespace KeyboardOsd
                 osdLabel.Text = _osdText + @"OFF";
                 if (_showWhenEnabled) Hide();
             }
-            if (_userSettings.SettingsHidden)
-            {
-                BringToFront();
-                TopMost = true;
-            }//TODO When the userSettings form is minimized, I can't access the contextmenu
         }
 
         #region mouseEvents

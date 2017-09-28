@@ -29,8 +29,6 @@ namespace KeyboardOsd
             }
         }
 
-        public bool SettingsHidden { get; set; }
-
         internal bool CapsLock { get; set; }
 
         internal bool ScrollLock { get; set; }

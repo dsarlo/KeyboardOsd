@@ -27,6 +27,10 @@ namespace KeyboardOsd
         {
             InitializeComponent();
 
+            osdLabel.AutoSize = false;
+            osdLabel.TextAlign = ContentAlignment.MiddleCenter;
+            osdLabel.Dock = DockStyle.Fill;
+
             _osdType = osdType;
             _userSettings = userSettings;
             _originalTransKey = TransparencyKey;

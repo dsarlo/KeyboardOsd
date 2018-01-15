@@ -55,7 +55,7 @@ namespace KeyboardOsd
                     osdtext = "CAPS LOCK ";
                     break;
                 case OsdType.ScrollLock:
-                    osdtext = "SCROLL LOCK ";
+                    osdtext = "SCR LOCK ";
                     break;
                 case OsdType.NumLock:
                     osdtext = "NUM LOCK ";
@@ -99,7 +99,7 @@ namespace KeyboardOsd
                     break;
                 case UserSettings.PropertyNameShowWhenEnabled:
                     _showWhenEnabled = _userSettings.ShowWhenEnabled;
-                    UpdateLabelText();//TODO BUG! WHEN ENABLED, IF YOU CLOSE AN OSD AND THEN ENABLE IT, IT WON'T SHOW
+                    UpdateLabelText();
                     break;
                 case UserSettings.PropertyNameBgColor:
                     BackColor = _userSettings.BgColor;
@@ -182,6 +182,10 @@ namespace KeyboardOsd
             {
                 osdLabel.Text = _osdText + @"OFF";
                 if (_showWhenEnabled) Hide();
+                else
+                {
+                    Show();
+                }
             }
         }
 

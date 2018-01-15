@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KeyboardOsd
@@ -87,11 +88,17 @@ namespace KeyboardOsd
             if (capsLockCheckBox.Checked && _capsLockOsd == null)
             {
                 _capsLockOsd = new OnScreenDisplay(OsdType.CapsLock, _userSettings);
+                if (_activeOnScreenDisplays.Any())
+                {
+                    OnScreenDisplay lastActiveDisplay = _activeOnScreenDisplays.Last();
+                    _capsLockOsd.Location = new Point(lastActiveDisplay.Location.X + 0, lastActiveDisplay.Location.Y + 47);
+                }
                 _activeOnScreenDisplays.Add(_capsLockOsd);
                 _capsLockOsd.Show();
             }
             else
             {
+                _activeOnScreenDisplays.Remove(_capsLockOsd);
                 _capsLockOsd.Close();
                 _capsLockOsd = null;
             }
@@ -104,12 +111,18 @@ namespace KeyboardOsd
             if (scrollLockCheckBox.Checked && _scrollLockOsd == null)
             {
                 _scrollLockOsd = new OnScreenDisplay(OsdType.ScrollLock, _userSettings);
+                if (_activeOnScreenDisplays.Any())
+                {
+                    OnScreenDisplay lastActiveDisplay = _activeOnScreenDisplays.Last();
+                    _scrollLockOsd.Location = new Point(lastActiveDisplay.Location.X + 0, lastActiveDisplay.Location.Y + 47);
+                }
                 _activeOnScreenDisplays.Add(_scrollLockOsd);
                 _scrollLockOsd.Show();
             }
             else
             {
                 _scrollLockOsd.Close();
+                _activeOnScreenDisplays.Remove(_scrollLockOsd);
                 _scrollLockOsd = null;
             }
         }
@@ -121,12 +134,18 @@ namespace KeyboardOsd
             if (numLockCheckBox.Checked && _numLockOsd == null)
             {
                 _numLockOsd = new OnScreenDisplay(OsdType.NumLock, _userSettings);
+                if (_activeOnScreenDisplays.Any())
+                {
+                    OnScreenDisplay lastActiveDisplay = _activeOnScreenDisplays.Last();
+                    _numLockOsd.Location = new Point(lastActiveDisplay.Location.X + 0, lastActiveDisplay.Location.Y + 47);
+                }
                 _activeOnScreenDisplays.Add(_numLockOsd);
                 _numLockOsd.Show();
             }
             else
             {
                 _numLockOsd.Close();
+                _activeOnScreenDisplays.Remove(_numLockOsd);
                 _numLockOsd = null;
             }
         }

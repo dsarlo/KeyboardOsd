@@ -18,11 +18,16 @@ namespace KeyboardOsd
 
         private readonly List<OnScreenDisplay> _activeOnScreenDisplays;
 
+        private Rectangle _screenBounds;
+        private const int WindowAdditive = 47;
+
         private bool _userClosedForm = true;
 
         public Settings()
         {
             InitializeComponent();
+
+            _screenBounds = Screen.FromControl(this).Bounds;
 
             _userSettings = new UserSettings();
             _colorDialog = new ColorDialog();
@@ -91,7 +96,8 @@ namespace KeyboardOsd
                 if (_activeOnScreenDisplays.Any())
                 {
                     OnScreenDisplay lastActiveDisplay = _activeOnScreenDisplays.Last();
-                    _capsLockOsd.Location = new Point(lastActiveDisplay.Location.X + 0, lastActiveDisplay.Location.Y + 47);
+                    Point newLocation = new Point(lastActiveDisplay.Location.X, lastActiveDisplay.Location.Y + WindowAdditive);
+                    _capsLockOsd.Location = _screenBounds.Contains(new Point(newLocation.X, newLocation.Y + 47)) ? newLocation : _screenBounds.Location;
                 }
                 _activeOnScreenDisplays.Add(_capsLockOsd);
                 _capsLockOsd.Show();
@@ -114,7 +120,8 @@ namespace KeyboardOsd
                 if (_activeOnScreenDisplays.Any())
                 {
                     OnScreenDisplay lastActiveDisplay = _activeOnScreenDisplays.Last();
-                    _scrollLockOsd.Location = new Point(lastActiveDisplay.Location.X + 0, lastActiveDisplay.Location.Y + 47);
+                    Point newLocation = new Point(lastActiveDisplay.Location.X, lastActiveDisplay.Location.Y + WindowAdditive);
+                    _scrollLockOsd.Location = _screenBounds.Contains(new Point(newLocation.X, newLocation.Y + 47)) ? newLocation : _screenBounds.Location;
                 }
                 _activeOnScreenDisplays.Add(_scrollLockOsd);
                 _scrollLockOsd.Show();
@@ -137,7 +144,8 @@ namespace KeyboardOsd
                 if (_activeOnScreenDisplays.Any())
                 {
                     OnScreenDisplay lastActiveDisplay = _activeOnScreenDisplays.Last();
-                    _numLockOsd.Location = new Point(lastActiveDisplay.Location.X + 0, lastActiveDisplay.Location.Y + 47);
+                    Point newLocation = new Point(lastActiveDisplay.Location.X, lastActiveDisplay.Location.Y + WindowAdditive);
+                    _numLockOsd.Location = _screenBounds.Contains(new Point(newLocation.X, newLocation.Y + 47)) ? newLocation : _screenBounds.Location;
                 }
                 _activeOnScreenDisplays.Add(_numLockOsd);
                 _numLockOsd.Show();

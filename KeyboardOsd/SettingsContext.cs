@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace KeyboardOsd
 {
-    public enum OsdType
+    class SettingsContext
     {
-        Invalid = 0,
-        CapsLock = 1,
-        NumLock = 2,
-        ScrollLock = 3
     }
 }

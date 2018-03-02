@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using KeyboardOsd.Model;
 
 namespace KeyboardOsd
 {
@@ -36,6 +37,19 @@ namespace KeyboardOsd
             _notifyIcon.Icon = Icon;
 
             CreateContextMenuForTray();
+
+            bool loadedPreferences = _userSettings.LoadUserPreferences();
+
+            if (loadedPreferences) UpdateGuiValues();
+        }
+
+        private void UpdateGuiValues()
+        {
+            _opacityNumeric.Value = _userSettings.Opacity;
+            _bgTransCheckBox.Checked = _userSettings.BgTransparent;
+            _popupCheckBox.Checked = _userSettings.ShowWhenEnabled;
+            _fgColorBox.BackColor = _userSettings.FgColor;
+            _bgColorBox.BackColor = _userSettings.BgColor;
         }
 
         private void CreateContextMenuForTray()
@@ -68,29 +82,32 @@ namespace KeyboardOsd
 
         private void OpacityNumeric_ValueChanged(object sender, EventArgs e)
         {
-            _userSettings.Opacity = opacityNumeric.Value;
+            _userSettings.Opacity = _opacityNumeric.Value;
         }
 
         private void EnableAllSettingControls(bool enable)
         {
-            popupCheckBox.Enabled = enable;
-            opacityNumeric.Enabled = enable;
-            bgTransCheckBox.Enabled = enable;
-            fgColorBox.Enabled = enable;
-            bgColorBox.Enabled = enable;
+            _popupCheckBox.Enabled = enable;
+            _opacityNumeric.Enabled = enable;
+            _bgTransCheckBox.Enabled = enable;
+            _fgColorBox.Enabled = enable;
+            _bgColorBox.Enabled = enable;
+            saveBtn.Enabled = enable;
+            deleteBtn.Enabled = enable;
         }
 
         private void CheckIfAnyOsdIsEnabled()
         {
-            if(_userSettings.NumLock || _userSettings.CapsLock || _userSettings.ScrollLock) EnableAllSettingControls(true);
-            else EnableAllSettingControls(false);
+            EnableAllSettingControls(_userSettings.IsAnyOsdEnabled());
         }
 
         private void CapsLockCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _userSettings.CapsLock = capsLockCheckBox.Checked;
+            _userSettings.CapsLock = _capsLockCheckBox.Checked;
+
             CheckIfAnyOsdIsEnabled();
-            if (capsLockCheckBox.Checked && _capsLockOsd == null)
+
+            if (_capsLockCheckBox.Checked && _capsLockOsd == null)
             {
                 _capsLockOsd = new OnScreenDisplay(OsdType.CapsLock, _userSettings);
                 if (_activeOnScreenDisplays.Any())
@@ -112,9 +129,11 @@ namespace KeyboardOsd
 
         private void ScrollLockCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _userSettings.ScrollLock = scrollLockCheckBox.Checked;
+            _userSettings.ScrollLock = _scrollLockCheckBox.Checked;
+
             CheckIfAnyOsdIsEnabled();
-            if (scrollLockCheckBox.Checked && _scrollLockOsd == null)
+
+            if (_scrollLockCheckBox.Checked && _scrollLockOsd == null)
             {
                 _scrollLockOsd = new OnScreenDisplay(OsdType.ScrollLock, _userSettings);
                 if (_activeOnScreenDisplays.Any())
@@ -136,9 +155,11 @@ namespace KeyboardOsd
 
         private void NumLockCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _userSettings.NumLock = numLockCheckBox.Checked;
+            _userSettings.NumLock = _numLockCheckBox.Checked;
+
             CheckIfAnyOsdIsEnabled();
-            if (numLockCheckBox.Checked && _numLockOsd == null)
+
+            if (_numLockCheckBox.Checked && _numLockOsd == null)
             {
                 _numLockOsd = new OnScreenDisplay(OsdType.NumLock, _userSettings);
                 if (_activeOnScreenDisplays.Any())
@@ -160,12 +181,12 @@ namespace KeyboardOsd
 
         private void BgTransCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _userSettings.BgTransparent = bgTransCheckBox.Checked;
+            _userSettings.BgTransparent = _bgTransCheckBox.Checked;
         }
 
         private void PopupCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _userSettings.ShowWhenEnabled = popupCheckBox.Checked;
+            _userSettings.ShowWhenEnabled = _popupCheckBox.Checked;
         }
 
         private void FgColorBox_Click(object sender, EventArgs e)
@@ -175,7 +196,7 @@ namespace KeyboardOsd
             {
                 Color selectedColor = _colorDialog.Color;
                 _userSettings.FgColor = selectedColor;
-                fgColorBox.BackColor = selectedColor;
+                _fgColorBox.BackColor = selectedColor;
             }
         }
 
@@ -186,7 +207,7 @@ namespace KeyboardOsd
             {
                 Color selectedColor = _colorDialog.Color;
                 _userSettings.BgColor = selectedColor;
-                bgColorBox.BackColor = selectedColor;
+                _bgColorBox.BackColor = selectedColor;
             }
         }
 
@@ -200,6 +221,21 @@ namespace KeyboardOsd
                 _notifyIcon.BalloonTipText = @"OSD Settings has been minimized to the system tray";
                 _notifyIcon.ShowBalloonTip(5);
             }
+        }
+
+        private void SaveBtn_Click(object sender, EventArgs e)
+        {
+            _userSettings.SaveSettings();
+        }
+
+        private void DeleteBtn_Click(object sender, EventArgs e)
+        {
+            _userSettings.DeleteSavedSettings();
+            _opacityNumeric.Value = 100;
+            _popupCheckBox.Checked = false;
+            _bgTransCheckBox.Checked = false;
+            _fgColorBox.BackColor = new Color();
+            _bgColorBox.BackColor = new Color();
         }
     }
 }

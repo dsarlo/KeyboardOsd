@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using KeyboardOsd.Model;
 
 namespace KeyboardOsd
 {
@@ -27,14 +27,13 @@ namespace KeyboardOsd
         {
             InitializeComponent();
 
-            osdLabel.AutoSize = false;
-            osdLabel.TextAlign = ContentAlignment.MiddleCenter;
-            osdLabel.Dock = DockStyle.Fill;
+            _osdLabel.AutoSize = false;
+            _osdLabel.TextAlign = ContentAlignment.MiddleCenter;
+            _osdLabel.Dock = DockStyle.Fill;
 
             _osdType = osdType;
             _userSettings = userSettings;
             _originalTransKey = TransparencyKey;
-            _showWhenEnabled = userSettings.ShowWhenEnabled;
 
             _osdText = OsdTypeToText();
 
@@ -86,16 +85,7 @@ namespace KeyboardOsd
                     Opacity = (double)(_userSettings.Opacity / 100);
                     break;
                 case UserSettings.PropertyNameBgTransparent:
-                    if (_userSettings.BgTransparent)
-                    {
-                        TransparencyKey = Color.FromArgb(255, 1, 3, 3);
-                        BackColor = TransparencyKey;
-                    }
-                    else
-                    {
-                        TransparencyKey = _originalTransKey;
-                        BackColor = _userSettings.BgColor;
-                    }
+                    MakeBackgroundTransparent();
                     break;
                 case UserSettings.PropertyNameShowWhenEnabled:
                     _showWhenEnabled = _userSettings.ShowWhenEnabled;
@@ -105,8 +95,22 @@ namespace KeyboardOsd
                     BackColor = _userSettings.BgColor;
                     break;
                 case UserSettings.PropertyNameFgColor:
-                    ForeColor = _userSettings.FgColor;
+                    _osdLabel.ForeColor = _userSettings.FgColor;
                     break;
+            }
+        }
+
+        private void MakeBackgroundTransparent()
+        {
+            if (_userSettings.BgTransparent)
+            {
+                TransparencyKey = Color.FromArgb(255, 1, 3, 3);
+                BackColor = TransparencyKey;
+            }
+            else
+            {
+                TransparencyKey = _originalTransKey;
+                BackColor = _userSettings.BgColor;
             }
         }
 
@@ -115,10 +119,15 @@ namespace KeyboardOsd
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.Manual;
             Location = new Point(0, 0);
-            osdLabel.ForeColor = _userSettings.FgColor;
-            UpdateLabelText();
-            osdLabel.Text = _osdText;
+
+            _osdLabel.ForeColor = _userSettings.FgColor;
             BackColor = _userSettings.BgColor;
+            Opacity = (double) (_userSettings.Opacity/100);
+            _showWhenEnabled = _userSettings.ShowWhenEnabled;
+            MakeBackgroundTransparent();
+
+            UpdateLabelText();
+            _osdLabel.Text = _osdText;
             TopMost = true;
         }
 
@@ -134,9 +143,9 @@ namespace KeyboardOsd
             {
                 lock (_threadLock)
                 {
-                    if (osdLabel.InvokeRequired)
+                    if (_osdLabel.InvokeRequired)
                     {
-                        osdLabel.Invoke(new MethodInvoker(UpdateLabelText));
+                        _osdLabel.Invoke(new MethodInvoker(UpdateLabelText));
                     }
                     else
                     {
@@ -175,12 +184,12 @@ namespace KeyboardOsd
 
             if (IsKeyLocked(keyOsdIsTracking))
             {
-                osdLabel.Text = _osdText + @"ON";
+                _osdLabel.Text = _osdText + @"ON";
                 if (_showWhenEnabled) Show();
             }
             else
             {
-                osdLabel.Text = _osdText + @"OFF";
+                _osdLabel.Text = _osdText + @"OFF";
                 if (_showWhenEnabled) Hide();
                 else
                 {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
 
-namespace KeyboardOsd
+namespace KeyboardOsd.Model
 {
     public class UserSettings
     {
@@ -73,6 +73,58 @@ namespace KeyboardOsd
                 _fgColor = value;
                 OnPropertyChanged(PropertyNameFgColor);
             }
+        }
+
+        public void SaveSettings()
+        {
+            //TODO add location on screen to settings form
+            Properties.Settings.Default.Opacity = Opacity;
+            Properties.Settings.Default.FGcolor = FgColor;
+            Properties.Settings.Default.BGcolor = BgColor;
+            Properties.Settings.Default.Transparent = BgTransparent;
+            Properties.Settings.Default.ShowWhenEnabled = ShowWhenEnabled;
+            Properties.Settings.Default.Saved = true;
+            Properties.Settings.Default.Save();
+        }
+
+        public void DeleteSavedSettings()
+        {
+            Properties.Settings.Default.Opacity = 100;
+            Properties.Settings.Default.FGcolor = new Color();
+            Properties.Settings.Default.BGcolor = new Color();
+            Properties.Settings.Default.Transparent = false;
+            Properties.Settings.Default.ShowWhenEnabled = false;
+            Properties.Settings.Default.Saved = false;
+            Properties.Settings.Default.Save();
+
+            //Reset all values to default
+            Opacity = 100;
+            ShowWhenEnabled = false;
+            BgTransparent = false;
+            FgColor = new Color();
+            BgColor = new Color();
+        }
+
+        public bool LoadUserPreferences()
+        {
+            bool loadedSavedPreferences = false;
+
+            if (Properties.Settings.Default.Saved)
+            {
+                Opacity = Properties.Settings.Default.Opacity;
+                FgColor = Properties.Settings.Default.FGcolor;
+                BgColor = Properties.Settings.Default.BGcolor;
+                BgTransparent = Properties.Settings.Default.Transparent;
+                ShowWhenEnabled = Properties.Settings.Default.ShowWhenEnabled;
+                loadedSavedPreferences = true;
+            }
+
+            return loadedSavedPreferences;
+        }
+
+        public bool IsAnyOsdEnabled()
+        {
+            return NumLock || CapsLock || ScrollLock;
         }
 
         protected void OnPropertyChanged(string name)
